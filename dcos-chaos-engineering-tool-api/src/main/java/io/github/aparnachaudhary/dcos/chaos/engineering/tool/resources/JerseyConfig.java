@@ -17,6 +17,7 @@ public class JerseyConfig extends ResourceConfig {
 
     public JerseyConfig() {
         // resources
+        this.register(ClusterResource.class);
         this.register(MarathonAppsResource.class);
         // exceptions mappers
     }

@@ -1,17 +1,14 @@
 package io.github.aparnachaudhary.dcos.chaos.engineering.tool.services;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.Instant;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import io.github.aparnachaudhary.dcos.chaos.engineering.tool.exceptions.DcosChaosException;
-import mesosphere.dcos.client.DCOS;
-import mesosphere.marathon.client.MarathonException;
-import mesosphere.marathon.client.model.v2.App;
-import mesosphere.marathon.client.model.v2.GetAppsResponse;
+import io.github.aparnachaudhary.dcos.chaos.engineering.tool.entities.MarathonApplicationEntity;
+import io.github.aparnachaudhary.dcos.chaos.engineering.tool.repositories.MarathonApplicationRepository;
 
 /**
  * Responsible for configuring chaos entity.
@@ -21,23 +18,22 @@ import mesosphere.marathon.client.model.v2.GetAppsResponse;
 @Service
 public class MarathonAppChaosService {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(MarathonAppChaosService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MarathonAppChaosService.class);
 
-    private DCOS dcosClient;
+    private MarathonApplicationRepository applicationRepository;
 
-    public MarathonAppChaosService(DCOS dcosClient) {
-        this.dcosClient = dcosClient;
+
+    public MarathonAppChaosService(MarathonApplicationRepository applicationRepository) {
+        this.applicationRepository = applicationRepository;
     }
 
-    public List<String> listMarathonApplications() throws DcosChaosException {
-        try {
-            GetAppsResponse appsResponse = dcosClient.getApps();
-            return appsResponse.getApps().stream().map(App::getId).collect(Collectors.toList());
-        } catch (MarathonException me) {
-            throw new DcosChaosException("Failed to list applications", me);
+    public MarathonApplicationEntity createOptInApplication(MarathonApplicationEntity entity) {
+
+        Objects.requireNonNull(entity, "MarathonApplication must not be null");
+        LOGGER.debug("Creating opt-in for marathon application={}", entity);
+        if (entity.getLastModifiedOn() == null) {
+            entity.setLastModifiedOn(Instant.now());
         }
-
+        return applicationRepository.save(entity);
     }
-
-
 }
