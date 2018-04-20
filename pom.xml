@@ -19,8 +19,16 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <java.version>1.8</java.version>
 
+        <!-- ============= -->
+        <!-- THIRD PARTY VERSIONS -->
+        <!-- ============= -->
         <version.spring-boot>2.0.1.RELEASE</version.spring-boot>
+        <version.marathon-client>0.6.0</version.marathon-client>
+        <version.json-smart>2.3</version.json-smart>
 
+        <!-- ============= -->
+        <!-- MAVEN PLUGIN VERSIONS -->
+        <!-- ============= -->
         <version.maven-jar-plugin>2.6</version.maven-jar-plugin>
 
     </properties>
@@ -40,9 +48,20 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>io.github.aparnachaudhary</groupId>
-                <artifactId>springboot-jersey-multimodule-core</artifactId>
-                <version>${project.version}</version>
+                <groupId>com.mesosphere</groupId>
+                <artifactId>marathon-client</artifactId>
+                <version>${version.marathon-client}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>net.minidev</groupId>
+                <artifactId>json-smart</artifactId>
+                <version>${version.json-smart}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
